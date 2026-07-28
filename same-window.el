@@ -1,4 +1,4 @@
-;;; same-window.el --- Always open buffers in the current window -*- lexical-binding: t; -*-
+;;; same-window --- Always open buffers in the current window -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2026 James Cherti | https://www.jamescherti.com/contact/
 
@@ -6,7 +6,7 @@
 ;; Version: 0.9.9
 ;; URL: https://github.com/jamescherti/same-window.el
 ;; Keywords: convenience
-;; Package-Requires: ((emacs "24.1"))
+;; Package-Requires: ((emacs "24.4"))
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -76,9 +76,12 @@ aggressively overrides all other configurations."
 
 (defun same-window--force-same-window-advice (orig-fun &rest args)
   "Advice to force functions to open in the current window.
-Delegates to `display-buffer' mechanisms to respect frame raising.
-If `same-window-respect-display-buffer-alist' is non-nil,
-it clears hostile local bindings to allow the standard rules to run."
+ORIG-FUN is the original function being advised.
+ARGS are the arguments passed to ORIG-FUN.
+
+Delegates to `display-buffer' mechanisms to respect frame raising. If
+`same-window-respect-display-buffer-alist' is non-nil, it clears hostile local
+bindings to allow the standard rules to run."
   (let ((display-buffer-overriding-action
          (if same-window-respect-display-buffer-alist
              display-buffer-overriding-action
@@ -163,5 +166,8 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
     (advice-remove 'switch-to-buffer-other-window
                    #'same-window--force-same-window-advice)))
 
+;;; Provide
+
 (provide 'same-window)
-;;; same-window.el ends here
+
+;;; same-window ends here
