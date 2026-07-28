@@ -1,4 +1,4 @@
-;;; same-window --- Always open buffers in the current window -*- lexical-binding: t; -*-
+;;; same-window.el --- Always open buffers in the current window -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2026 James Cherti | https://www.jamescherti.com/contact/
 
@@ -170,4 +170,4 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
 
 (provide 'same-window)
 
-;;; same-window ends here
+;;; same-window.el ends here
