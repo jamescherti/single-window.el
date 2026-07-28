@@ -1,5 +1,5 @@
 # same-window.el - Always open buffers in the current active window
-![Build Status](https://github.com/jamescherti/same-window.el/actions/workflows/ci.yml/badge.svg)
+![Build Status](https://github.com/jamescherti/same-window.el/actions/workflows/melpazoid.yml/badge.svg)
 ![License](https://img.shields.io/github/license/jamescherti/same-window.el)
 ![](https://jamescherti.com/misc/made-for-gnu-emacs.svg)
 
