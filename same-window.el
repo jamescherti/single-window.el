@@ -56,7 +56,6 @@ aggressively overrides all other configurations."
 (defvar org-agenda-window-setup)
 (defvar org-indirect-buffer-display)
 (defvar org-src-window-setup)
-(defvar Man-notify-method)
 
 (defvar same-window--save-vars '())
 

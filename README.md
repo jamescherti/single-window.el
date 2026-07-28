@@ -1,9 +1,11 @@
-# same-window.el
+# same-window.el - Always open buffers in the current active window
 ![Build Status](https://github.com/jamescherti/same-window.el/actions/workflows/ci.yml/badge.svg)
 ![License](https://img.shields.io/github/license/jamescherti/same-window.el)
 ![](https://jamescherti.com/misc/made-for-gnu-emacs.svg)
 
-Always open buffers in the current window.
+The **same-window** package forces Emacs to open buffers in the current active window.
+
+It keeps your carefully arranged layouts intact, reduces visual clutter, and provides a much more predictable workflow. It also handles edge cases by configuring modes like `org-mode` (src blocks and agenda) to respect the current window.
 
 ## Installation
 
@@ -54,6 +56,12 @@ Here is how to install *same-window* on Doom Emacs:
 ```
 doom sync
 ```
+
+## Customization
+
+You can tweak how aggressively the package enforces its rules using the `same-window-respect-display-buffer-alist` variable:
+* `t` (Default): The package appends its strict same-window rule as a fallback. This allows any specific buffer rules you have manually defined in `display-buffer-alist` to take precedence.
+* `nil`: The package prepends its rule, aggressively overriding all other window configurations and forcing *everything* into the current window.
 
 ## Author and License
 
