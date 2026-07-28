@@ -23,22 +23,35 @@
 ;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
+
 ;; Always use the same window.
 
 ;;; Code:
 
+;;; Variables
+
 (defgroup same-window nil
-  "Always use the same window"
+  "Always open buffer in the current window."
   :group 'same-window
   :prefix "same-window-"
   :link '(url-link
           :tag "Github"
           "https://github.com/jamescherti/same-window.el"))
 
+(defcustom same-window-respect-display-buffer-alist t
+  "When non-nil, respect user configurations in `display-buffer-alist'.
+If enabled, the strict same-window rule is appended as a fallback, allowing
+specific buffer rules to take precedence. If nil, the rule is prepended and
+aggressively overrides all other configurations."
+  :type 'boolean
+  :group 'same-window)
+
 (defcustom same-window-verbose nil
   "Enable displaying verbose messages."
   :type 'boolean
   :group 'same-window)
+
+;;; Functions
 
 (defun same-window--message (&rest args)
   "Display a message with the same ARGS arguments as `message'."
