@@ -35,7 +35,7 @@ jobs:
       - name: Run
         env:
           LOCAL_REPO: "${{ github.workspace }}"
-          RECIPE: (same-window.el :fetcher github :repo "jamescherti/same-window.el.el" :branch "${{ github.ref_name }}" :files ("same-window.el.el"))
+          RECIPE: (same-window.el :fetcher github :repo "jamescherti/same-window.el" :branch "${{ github.ref_name }}" :files ("same-window.el"))
           # Set EXIST_OK to false (or remove it) if the package isn't on MELPA
           EXIST_OK: true
         run: echo $GITHUB_REF && make -C ~/melpazoid
