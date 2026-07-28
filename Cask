@@ -1,4 +1,4 @@
 (source gnu)
 (source melpa)
 
-(package-file "same-window.el")
+(package-file "same-window.el.el")

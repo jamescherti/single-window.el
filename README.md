@@ -3,7 +3,7 @@
 ![License](https://img.shields.io/github/license/jamescherti/same-window.el)
 ![](https://jamescherti.com/misc/made-for-gnu-emacs.svg)
 
-Always use the same window.
+Always open buffers in the current window.
 
 ## Installation
 

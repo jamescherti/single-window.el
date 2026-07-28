@@ -1,4 +1,4 @@
-;;; same-window.el --- Always use the same window -*- lexical-binding: t; -*-
+;;; same-window.el --- Always open buffers in the current window -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2026 James Cherti | https://www.jamescherti.com/contact/
 
@@ -46,24 +46,67 @@ aggressively overrides all other configurations."
   :type 'boolean
   :group 'same-window)
 
-(defcustom same-window-verbose nil
-  "Enable displaying verbose messages."
-  :type 'boolean
-  :group 'same-window)
+;; (defcustom same-window-verbose nil
+;;   "Enable displaying verbose messages."
+;;   :type 'boolean
+;;   :group 'same-window)
+
+;;; Internal variables
+
+(defvar org-agenda-window-setup)
+(defvar org-indirect-buffer-display)
+(defvar org-src-window-setup)
+(defvar Man-notify-method)
+
+(defvar same-window--save-vars '())
 
 ;;; Functions
 
-(defun same-window--message (&rest args)
-  "Display a message with the same ARGS arguments as `message'."
-  (apply #'message (concat "[same-window] " (car args)) (cdr args)))
+;; (defun same-window--message (&rest args)
+;;   "Display a message with the same ARGS arguments as `message'."
+;;   (apply #'message (concat "[same-window] " (car args)) (cdr args)))
+;;
+;; (defmacro same-window--verbose-message (&rest args)
+;;   "Display a verbose message with the same ARGS arguments as `message'."
+;;   (declare (indent 0) (debug t))
+;;   `(progn
+;;      (when same-window-verbose
+;;        (same-window--message
+;;         (concat ,(car args)) ,@(cdr args)))))
 
-(defmacro same-window--verbose-message (&rest args)
-  "Display a verbose message with the same ARGS arguments as `message'."
-  (declare (indent 0) (debug t))
-  `(progn
-     (when same-window-verbose
-       (same-window--message
-        (concat ,(car args)) ,@(cdr args)))))
+(defun same-window--force-same-window-advice (orig-fun &rest args)
+  "Advice to force functions to open in the current window.
+Delegates to `display-buffer' mechanisms to respect frame raising.
+If `same-window-respect-display-buffer-alist' is non-nil,
+it clears hostile local bindings to allow the standard rules to run."
+  (let ((display-buffer-overriding-action
+         (if same-window-respect-display-buffer-alist
+             display-buffer-overriding-action
+           '((display-buffer-same-window)
+             (inhibit-same-window . nil)))))
+    (apply orig-fun args)))
+
+;; Replaced the static ".*" regex with a dynamic condition function
+;; (`same-window--condition-p'). This allows Emacs to dynamically evaluate
+;; the context, which reliably intercepts context-switching modes like Embark
+;; and Compilation.
+(defconst same-window--display-buffer-entry
+  '(same-window--condition-p (display-buffer-same-window)
+                             (inhibit-same-window . nil))
+  "Entry added to `display-buffer-alist' when mode is active.")
+
+;; Added this condition function for `display-buffer-alist'. Returning non-nil
+;; globally forces the buffer to open in the current window. This catches the
+;; Embark/Compilation context-switches natively without checking window history,
+;; and it provides a feature for the user to bypass the rule on demand using
+;; `current-prefix-arg'.
+(defun same-window--condition-p (_buffer-name _action)
+  "Condition function for `display-buffer-alist'.
+Return non-nil to globally force the buffer to open in the current window.
+Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
+  (not current-prefix-arg))
+
+;;; Mode
 
 ;;;###autoload
 (define-minor-mode same-window-mode
@@ -72,8 +115,53 @@ aggressively overrides all other configurations."
   :lighter " same-window"
   :group 'same-window
   (if same-window-mode
-      t
-    t))
+      ;; Enable
+      (progn
+        ;; Save variables
+        (setq same-window--save-vars nil)
+        (dolist (var '(org-src-window-setup
+                       org-agenda-window-setup
+                       org-indirect-buffer-display
+                       pop-up-windows
+                       pop-up-frames))
+          (when (boundp var)
+            (push (cons var (symbol-value var)) same-window--save-vars)))
+
+        ;; Safely append or prepend to the standard alist based on configuration
+        (if same-window-respect-display-buffer-alist
+            (add-to-list 'display-buffer-alist same-window--display-buffer-entry t)
+          (add-to-list 'display-buffer-alist same-window--display-buffer-entry))
+
+        ;; Defensive safety net against C-level functions splitting frames
+        (setq pop-up-windows nil)
+        (setq pop-up-frames nil)
+
+        ;; Configure Man and org
+        (setq org-src-window-setup 'current-window)
+        (setq org-agenda-window-setup 'current-window)
+        (setq org-indirect-buffer-display 'current-window)
+
+        (advice-add 'delete-other-windows :override #'ignore)
+        (advice-add 'pop-to-buffer
+                    :around
+                    #'same-window--force-same-window-advice)
+        (advice-add 'switch-to-buffer-other-window
+                    :around
+                    #'same-window--force-same-window-advice))
+    ;; Disable
+    (dolist (var same-window--save-vars)
+      (set (car var) (cdr var)))
+    (setq same-window--save-vars nil)
+
+    ;; Remove only our specific entry from `display-buffer-alist'
+    (setq display-buffer-alist (delete same-window--display-buffer-entry
+                                       display-buffer-alist))
+
+    (advice-remove 'delete-other-windows #'ignore)
+    (advice-remove 'pop-to-buffer
+                   #'same-window--force-same-window-advice)
+    (advice-remove 'switch-to-buffer-other-window
+                   #'same-window--force-same-window-advice)))
 
 (provide 'same-window)
 ;;; same-window.el ends here
