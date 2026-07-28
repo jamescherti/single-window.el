@@ -24,7 +24,8 @@
 
 ;;; Commentary:
 
-;; Always use the same window.
+;; The same-window package forces Emacs to open buffers in the current active
+;; window.
 
 ;;; Code:
 
@@ -138,7 +139,7 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
         (setq pop-up-windows nil)
         (setq pop-up-frames nil)
 
-        ;; Configure Man and org
+        ;; Configure org
         (setq org-src-window-setup 'current-window)
         (setq org-agenda-window-setup 'current-window)
         (setq org-indirect-buffer-display 'current-window)
