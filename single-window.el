@@ -62,6 +62,8 @@ aggressively overrides all other configurations."
 (defvar org-agenda-window-setup)
 (defvar org-indirect-buffer-display)
 (defvar org-src-window-setup)
+(defvar switch-to-buffer-in-dedicated-window)
+(defvar switch-to-buffer-obey-display-actions)
 (defvar single-window--save-vars nil)
 
 ;;; Functions
@@ -93,20 +95,11 @@ bindings to allow the standard rules to run."
              (inhibit-same-window . nil)))))
     (apply orig-fun args)))
 
-;; Replaced the static ".*" regex with a dynamic condition function
-;; (`single-window--condition-p'). This allows Emacs to dynamically evaluate
-;; the context, which reliably intercepts context-switching modes like Embark
-;; and Compilation.
 (defconst single-window--display-buffer-entry
   '(single-window--condition-p display-buffer-same-window
                                (inhibit-same-window . nil))
   "Entry added to `display-buffer-alist' when mode is active.")
 
-;; Added this condition function for `display-buffer-alist'. Returning non-nil
-;; globally forces the buffer to open in the current window. This catches the
-;; Embark/Compilation context-switches natively without checking window history,
-;; and it provides a feature for the user to bypass the rule on demand using
-;; `current-prefix-arg'.
 (defun single-window--condition-p (_buffer-name _action)
   "Condition function for `display-buffer-alist'.
 Return non-nil to globally force the buffer to open in the current window.
@@ -124,16 +117,20 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
   (if single-window-mode
       ;; Enable
       (progn
-        ;; Save variables
-        (setq single-window--save-vars nil)
-        (dolist (var '(org-src-window-setup
-                       org-agenda-window-setup
-                       org-indirect-buffer-display
-                       pop-up-windows
-                       pop-up-frames
-                       switch-to-buffer-obey-display-actions))
-          (when (boundp var)
-            (push (cons var (symbol-value var)) single-window--save-vars)))
+        ;; Save variables only if they have not been saved yet
+        (unless single-window--save-vars
+          (dolist (var '(org-src-window-setup
+                         org-agenda-window-setup
+                         org-indirect-buffer-display
+                         pop-up-windows
+                         pop-up-frames
+                         switch-to-buffer-obey-display-actions
+                         switch-to-buffer-in-dedicated-window))
+            (when (boundp var)
+              (push (cons var (symbol-value var)) single-window--save-vars))))
+
+        ;; Allow buffer switching in dedicated windows
+        (setq switch-to-buffer-in-dedicated-window t)
 
         ;; Safely append or prepend to the standard alist based on configuration
         (if single-window-respect-display-buffer-alist
