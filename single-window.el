@@ -62,8 +62,7 @@ aggressively overrides all other configurations."
 (defvar org-agenda-window-setup)
 (defvar org-indirect-buffer-display)
 (defvar org-src-window-setup)
-
-(defvar single-window--save-vars '())
+(defvar single-window--save-vars nil)
 
 ;;; Functions
 
@@ -100,7 +99,7 @@ bindings to allow the standard rules to run."
 ;; and Compilation.
 (defconst single-window--display-buffer-entry
   '(single-window--condition-p (display-buffer-same-window)
-                             (inhibit-same-window . nil))
+                               (inhibit-same-window . nil))
   "Entry added to `display-buffer-alist' when mode is active.")
 
 ;; Added this condition function for `display-buffer-alist'. Returning non-nil
