@@ -149,7 +149,6 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
         (setq org-agenda-window-setup 'current-window)
         (setq org-indirect-buffer-display 'current-window)
 
-        (advice-add 'delete-other-windows :override #'ignore)
         (advice-add 'pop-to-buffer
                     :around
                     #'single-window--force-single-window-advice)
@@ -165,7 +164,6 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
     (setq display-buffer-alist (delete single-window--display-buffer-entry
                                        display-buffer-alist))
 
-    (advice-remove 'delete-other-windows #'ignore)
     (advice-remove 'pop-to-buffer
                    #'single-window--force-single-window-advice)
     (advice-remove 'switch-to-buffer-other-window
