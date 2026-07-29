@@ -60,8 +60,8 @@ doom sync
 ## Customization
 
 You can tweak how aggressively the package enforces its rules using the `single-window-respect-display-buffer-alist` variable:
-* `t` (Default): The package appends its strict single-window rule as a fallback. This allows any specific buffer rules you have manually defined in `display-buffer-alist` to take precedence.
-* `nil`: The package prepends its rule, aggressively overriding all other window configurations and forcing *everything* into the current window.
+* `nil` (Default): The package prepends its rule, aggressively overriding all other window configurations and forcing *everything* into the current window.
+* `t`: The package appends its strict single-window rule as a fallback. This allows any specific buffer rules you have manually defined in `display-buffer-alist` to take precedence.
 
 ## Author and License
 

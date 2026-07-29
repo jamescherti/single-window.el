@@ -44,7 +44,7 @@
           :tag "Github"
           "https://github.com/jamescherti/single-window.el"))
 
-(defcustom single-window-respect-display-buffer-alist t
+(defcustom single-window-respect-display-buffer-alist nil
   "When non-nil, respect user configurations in `display-buffer-alist'.
 If enabled, the strict single-window rule is appended as a fallback, allowing
 specific buffer rules to take precedence. If nil, the rule is prepended and
