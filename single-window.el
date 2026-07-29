@@ -89,7 +89,7 @@ bindings to allow the standard rules to run."
   (let ((display-buffer-overriding-action
          (if single-window-respect-display-buffer-alist
              display-buffer-overriding-action
-           '((display-buffer-same-window)
+           '(display-buffer-same-window
              (inhibit-same-window . nil)))))
     (apply orig-fun args)))
 
@@ -98,7 +98,7 @@ bindings to allow the standard rules to run."
 ;; the context, which reliably intercepts context-switching modes like Embark
 ;; and Compilation.
 (defconst single-window--display-buffer-entry
-  '(single-window--condition-p (display-buffer-same-window)
+  '(single-window--condition-p display-buffer-same-window
                                (inhibit-same-window . nil))
   "Entry added to `display-buffer-alist' when mode is active.")
 
@@ -130,7 +130,8 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
                        org-agenda-window-setup
                        org-indirect-buffer-display
                        pop-up-windows
-                       pop-up-frames))
+                       pop-up-frames
+                       switch-to-buffer-obey-display-actions))
           (when (boundp var)
             (push (cons var (symbol-value var)) single-window--save-vars)))
 
@@ -142,6 +143,8 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
         ;; Defensive safety net against C-level functions splitting frames
         (setq pop-up-windows nil)
         (setq pop-up-frames nil)
+        (when (boundp 'switch-to-buffer-obey-display-actions)
+          (setq switch-to-buffer-obey-display-actions t))
 
         ;; Configure org
         (setq org-src-window-setup 'current-window)
