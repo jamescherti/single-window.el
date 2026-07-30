@@ -5,9 +5,19 @@
 
 The **single-window** package forces Emacs to open buffers in the current active window.
 
-It keeps your carefully arranged layouts intact, reduces visual clutter, and provides a much more predictable workflow. It also handles edge cases by configuring modes like `org-mode` (src blocks and agenda) to respect the current window.
+It keeps your carefully arranged layouts intact, reduces visual clutter, and provides a much more predictable workflow. It handles edge cases by configuring modes like `org-mode` (src blocks and agenda) to respect the current window.
 
-## Installation
+## Features
+
+- **Global enforcement:** Activates a global minor mode that sets `pop-up-windows` and `pop-up-frames` to `nil` to prevent unwanted splits.
+- **Prefix argument bypass:** You can dynamically bypass the single window enforcement for a specific command by using a prefix argument (e.g., `C-u`).
+- **Org mode support:** Automatically configures `org-src-window-setup`, `org-agenda-window-setup`, and `org-indirect-buffer-display` to `'current-window`.
+- **Dedicated windows:** Sets `switch-to-buffer-in-dedicated-window` to `t` to permit buffer switching inside dedicated windows.
+- **Safe restoration:** When `single-window-mode` is toggled off, it correctly restores your previous window variables and removes its footprint from `display-buffer-alist`.
+
+## Installation and Usage
+
+To enable the package, you need to activate the global minor mode `single-window-mode`.
 
 ### Emacs: use-package and straight (Emacs version < 30)
 
@@ -20,17 +30,21 @@ To install *single-window* with `straight.el`:
   :straight (single-window
              :type git
              :host github
-             :repo "jamescherti/single-window.el"))
+             :repo "jamescherti/single-window.el")
+  :config
+  (single-window-mode 1))
 ```
 
 ### Alternative installation: use-package and :vc (Built-in feature in Emacs version >= 30)
 
 To install *single-window* with `use-package` and `:vc` (Emacs >= 30):
 
-``` emacs-lisp
+```emacs-lisp
 (use-package single-window
   :vc (:url "https://github.com/jamescherti/single-window.el"
-       :rev :newest))
+       :rev :newest)
+  :config
+  (single-window-mode 1))
 ```
 
 ### Alternative installation: Doom Emacs
@@ -38,6 +52,7 @@ To install *single-window* with `use-package` and `:vc` (Emacs >= 30):
 Here is how to install *single-window* on Doom Emacs:
 
 1. Add to the `~/.doom.d/packages.el` file:
+
 ```elisp
 (package! single-window
   :recipe
@@ -45,14 +60,14 @@ Here is how to install *single-window* on Doom Emacs:
 ```
 
 2. Add to `~/.doom.d/config.el`:
+
 ```elisp
 (after! single-window
-  ;; TODO: setq options
-  ;; TODO: Load the mode here
-  )
+  (single-window-mode 1))
 ```
 
 3. Run the `doom sync` command:
+
 ```
 doom sync
 ```
