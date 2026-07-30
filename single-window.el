@@ -97,9 +97,10 @@ Delegates to `display-buffer' mechanisms to respect frame raising.
 Clears hostile local bindings from rogue packages based on user configuration."
   (let ((display-buffer-overriding-action
          (cond
-          ;; User wants to respect overrides, and an override exists
+          ;; User wants to respect overrides, and a VALID override function exists
           ((and single-window-respect-display-buffer-overriding-action
-                display-buffer-overriding-action)
+                display-buffer-overriding-action
+                (car display-buffer-overriding-action))
            display-buffer-overriding-action)
           ;; User wants standard display-buffer-alist to handle it
           (single-window-respect-display-buffer-alist
@@ -119,10 +120,11 @@ Clears hostile local bindings from rogue packages based on user configuration."
   "Condition function for `display-buffer-alist'.
 Return non-nil to globally force the buffer to open in the current window.
 Allows bypassing the enforcement if `current-prefix-arg' is non-nil
-or if a display override is active and permitted by the user."
+or if a valid display override function is active and permitted by the user."
   (and (not current-prefix-arg)
        (not (and single-window-respect-display-buffer-overriding-action
-                 display-buffer-overriding-action))))
+                 display-buffer-overriding-action
+                 (car display-buffer-overriding-action)))))
 
 ;;; Mode
 
