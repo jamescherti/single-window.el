@@ -63,27 +63,10 @@ ARGS are the arguments passed to ORIG-FUN.
 Delegates to `display-buffer' mechanisms to respect frame raising.
 Clears hostile local bindings from rogue packages based on user configuration."
   (let ((display-buffer-overriding-action
-         (cond
-          ;; User explicitly allows overrides, and a valid override exists
-          ((and display-buffer-overriding-action
-                (car display-buffer-overriding-action))
-           display-buffer-overriding-action)
-          ;; Strict mode: aggressively force the single window
-          (t
-           '(display-buffer-same-window
-             (inhibit-same-window . nil))))))
+         (if current-prefix-arg
+             display-buffer-overriding-action
+           '(display-buffer-same-window (inhibit-same-window . nil)))))
     (apply orig-fun args)))
-
-(defconst single-window--display-buffer-entry
-  '(single-window--condition-p display-buffer-same-window
-                               (inhibit-same-window . nil))
-  "Entry added to `display-buffer-alist' when mode is active.")
-
-(defun single-window--condition-p (_buffer-name _action)
-  "Condition function for `display-buffer-alist'.
-Return non-nil to globally force the buffer to open in the current window.
-Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
-  (not current-prefix-arg))
 
 ;;; Mode
 
@@ -111,9 +94,6 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
         ;; Allow buffer switching in dedicated windows
         (setq switch-to-buffer-in-dedicated-window t)
 
-        ;; Prepend to the standard alist to ensure precedence
-        (add-to-list 'display-buffer-alist single-window--display-buffer-entry)
-
         ;; Defensive safety net against C-level functions splitting frames
         (setq pop-up-windows nil)
         (setq pop-up-frames nil)
@@ -125,10 +105,8 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
         (setq org-agenda-window-setup 'current-window)
         (setq org-indirect-buffer-display 'current-window)
 
-        (advice-add 'pop-to-buffer
-                    :around
-                    #'single-window--force-single-window-advice)
-        (advice-add 'switch-to-buffer-other-window
+        ;; Advise display-buffer to catch all rogue commands
+        (advice-add 'display-buffer
                     :around
                     #'single-window--force-single-window-advice))
     ;; Disable
@@ -136,13 +114,7 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
       (set (car var) (cdr var)))
     (setq single-window--save-vars nil)
 
-    ;; Remove only our specific entry from `display-buffer-alist' non-destructively
-    (setq display-buffer-alist (remove single-window--display-buffer-entry
-                                       display-buffer-alist))
-
-    (advice-remove 'pop-to-buffer
-                   #'single-window--force-single-window-advice)
-    (advice-remove 'switch-to-buffer-other-window
+    (advice-remove 'display-buffer
                    #'single-window--force-single-window-advice)))
 
 ;;; Provide
