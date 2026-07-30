@@ -74,3 +74,7 @@ This program is free software: you can redistribute it and/or modify it under th
 ## Links
 
 - [single-window.el @GitHub](https://github.com/jamescherti/single-window.el)
+
+See also:
+- [popwin](https://github.com/emacsorphanage/popwin)
+- [current-window-only](https://github.com/FrostyX/current-window-only)

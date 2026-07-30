@@ -89,7 +89,8 @@ Delegates to `display-buffer' mechanisms to respect frame raising. If
 `single-window-respect-display-buffer-alist' is non-nil, it clears hostile local
 bindings to allow the standard rules to run."
   (let ((display-buffer-overriding-action
-         (if single-window-respect-display-buffer-alist
+         (if (or single-window-respect-display-buffer-alist
+                 display-buffer-overriding-action)
              display-buffer-overriding-action
            '(display-buffer-same-window
              (inhibit-same-window . nil)))))
@@ -103,8 +104,10 @@ bindings to allow the standard rules to run."
 (defun single-window--condition-p (_buffer-name _action)
   "Condition function for `display-buffer-alist'.
 Return non-nil to globally force the buffer to open in the current window.
-Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
-  (not current-prefix-arg))
+Allows bypassing the enforcement if `current-prefix-arg' is non-nil
+or if a display override is active."
+  (and (not current-prefix-arg)
+       (not display-buffer-overriding-action)))
 
 ;;; Mode
 
