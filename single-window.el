@@ -84,8 +84,6 @@ Clears hostile local bindings from rogue packages based on user configuration."
           (dolist (var '(org-src-window-setup
                          org-agenda-window-setup
                          org-indirect-buffer-display
-                         pop-up-windows
-                         pop-up-frames
                          switch-to-buffer-obey-display-actions
                          switch-to-buffer-in-dedicated-window))
             (when (boundp var)
@@ -94,9 +92,7 @@ Clears hostile local bindings from rogue packages based on user configuration."
         ;; Allow buffer switching in dedicated windows
         (setq switch-to-buffer-in-dedicated-window t)
 
-        ;; Defensive safety net against C-level functions splitting frames
-        (setq pop-up-windows nil)
-        (setq pop-up-frames nil)
+        ;; Route buffer switching through display actions
         (when (boundp 'switch-to-buffer-obey-display-actions)
           (setq switch-to-buffer-obey-display-actions t))
 
