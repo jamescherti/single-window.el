@@ -44,22 +44,6 @@
           :tag "Github"
           "https://github.com/jamescherti/single-window.el"))
 
-(defcustom single-window-respect-display-buffer-alist nil
-  "When non-nil, respect user configurations in `display-buffer-alist'.
-If enabled, the strict single-window rule is appended as a fallback, allowing
-specific buffer rules to take precedence. If nil, the rule is prepended and
-aggressively overrides all other configurations."
-  :type 'boolean
-  :group 'single-window)
-
-(defcustom single-window-respect-display-buffer-overriding-action t
-  "When non-nil, respect `display-buffer-overriding-action'.
-If enabled, Emacs prefix commands like `other-window-prefix' (C-x 4 4) will
-function normally. If nil, this package will aggressively override modes that
-attempt to use this variable to force their own window layouts."
-  :type 'boolean
-  :group 'single-window)
-
 ;; (defcustom single-window-verbose nil
 ;;   "Enable displaying verbose messages."
 ;;   :type 'boolean
@@ -98,12 +82,8 @@ Clears hostile local bindings from rogue packages based on user configuration."
   (let ((display-buffer-overriding-action
          (cond
           ;; User explicitly allows overrides, and a valid override exists
-          ((and single-window-respect-display-buffer-overriding-action
-                display-buffer-overriding-action
+          ((and display-buffer-overriding-action
                 (car display-buffer-overriding-action))
-           display-buffer-overriding-action)
-          ;; User wants alist rules
-          (single-window-respect-display-buffer-alist
            display-buffer-overriding-action)
           ;; Strict mode: aggressively force the single window
           (t
@@ -149,9 +129,7 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
         (setq switch-to-buffer-in-dedicated-window t)
 
         ;; Safely append or prepend to the standard alist based on configuration
-        (if single-window-respect-display-buffer-alist
-            (add-to-list 'display-buffer-alist single-window--display-buffer-entry t)
-          (add-to-list 'display-buffer-alist single-window--display-buffer-entry))
+        (add-to-list 'display-buffer-alist single-window--display-buffer-entry t)
 
         ;; Defensive safety net against C-level functions splitting frames
         (setq pop-up-windows nil)
