@@ -59,9 +59,17 @@ doom sync
 
 ## Customization
 
-You can tweak how aggressively the package enforces its rules using the `single-window-respect-display-buffer-alist` variable:
-* `nil` (Default): The package prepends its rule, aggressively overriding all other window configurations and forcing *everything* into the current window.
-* `t`: The package appends its strict single-window rule as a fallback. This allows any specific buffer rules you have manually defined in `display-buffer-alist` to take precedence.
+You can tweak how aggressively the package enforces its rules using the following variables:
+
+`single-window-respect-display-buffer-alist`:
+
+- `nil` (Default): The package prepends its rule, aggressively overriding all other window configurations and forcing *everything* into the current window.
+- `t`: The package appends its strict single-window rule as a fallback. This allows any specific buffer rules you have manually defined in `display-buffer-alist` to take precedence.
+
+`single-window-respect-display-buffer-overriding-action`:
+
+- `t` (Default): Respects `display-buffer-overriding-action`, allowing standard Emacs prefix commands like `other-window-prefix` (`C-x 4 4`) to function normally.
+- `nil`: Aggressively overrides rogue modes that attempt to locally bind `display-buffer-overriding-action` to force their own window layouts, locking down the frame entirely.
 
 ## Author and License
 
@@ -76,5 +84,7 @@ This program is free software: you can redistribute it and/or modify it under th
 - [single-window.el @GitHub](https://github.com/jamescherti/single-window.el)
 
 See also:
+- [popper](https://github.com/karthink/popper)
+- [auto-side-windows](https://github.com/MArpogaus/auto-side-windows)
 - [popwin](https://github.com/emacsorphanage/popwin)
 - [current-window-only](https://github.com/FrostyX/current-window-only)

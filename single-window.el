@@ -52,6 +52,14 @@ aggressively overrides all other configurations."
   :type 'boolean
   :group 'single-window)
 
+(defcustom single-window-respect-display-buffer-overriding-action t
+  "When non-nil, respect `display-buffer-overriding-action'.
+If enabled, Emacs prefix commands like `other-window-prefix' (C-x 4 4) will
+function normally. If nil, this package will aggressively override modes that
+attempt to use this variable to force their own window layouts."
+  :type 'boolean
+  :group 'single-window)
+
 ;; (defcustom single-window-verbose nil
 ;;   "Enable displaying verbose messages."
 ;;   :type 'boolean
@@ -85,15 +93,21 @@ aggressively overrides all other configurations."
 ORIG-FUN is the original function being advised.
 ARGS are the arguments passed to ORIG-FUN.
 
-Delegates to `display-buffer' mechanisms to respect frame raising. If
-`single-window-respect-display-buffer-alist' is non-nil, it clears hostile local
-bindings to allow the standard rules to run."
+Delegates to `display-buffer' mechanisms to respect frame raising.
+Clears hostile local bindings from rogue packages based on user configuration."
   (let ((display-buffer-overriding-action
-         (if (or single-window-respect-display-buffer-alist
-                 display-buffer-overriding-action)
-             display-buffer-overriding-action
+         (cond
+          ;; User wants to respect overrides, and an override exists
+          ((and single-window-respect-display-buffer-overriding-action
+                display-buffer-overriding-action)
+           display-buffer-overriding-action)
+          ;; User wants standard display-buffer-alist to handle it
+          (single-window-respect-display-buffer-alist
+           nil)
+          ;; Strict mode: aggressively force the single window
+          (t
            '(display-buffer-same-window
-             (inhibit-same-window . nil)))))
+             (inhibit-same-window . nil))))))
     (apply orig-fun args)))
 
 (defconst single-window--display-buffer-entry
@@ -105,9 +119,10 @@ bindings to allow the standard rules to run."
   "Condition function for `display-buffer-alist'.
 Return non-nil to globally force the buffer to open in the current window.
 Allows bypassing the enforcement if `current-prefix-arg' is non-nil
-or if a display override is active."
+or if a display override is active and permitted by the user."
   (and (not current-prefix-arg)
-       (not display-buffer-overriding-action)))
+       (not (and single-window-respect-display-buffer-overriding-action
+                 display-buffer-overriding-action))))
 
 ;;; Mode
 
