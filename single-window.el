@@ -38,16 +38,11 @@
 
 (defgroup single-window nil
   "Always open buffer in the current window."
-  :group 'single-window
+  :group 'convenience
   :prefix "single-window-"
   :link '(url-link
           :tag "Github"
           "https://github.com/jamescherti/single-window.el"))
-
-;; (defcustom single-window-verbose nil
-;;   "Enable displaying verbose messages."
-;;   :type 'boolean
-;;   :group 'single-window)
 
 ;;; Internal variables
 
@@ -59,18 +54,6 @@
 (defvar single-window--save-vars nil)
 
 ;;; Functions
-
-;; (defun single-window--message (&rest args)
-;;   "Display a message with the same ARGS arguments as `message'."
-;;   (apply #'message (concat "[single-window] " (car args)) (cdr args)))
-;;
-;; (defmacro single-window--verbose-message (&rest args)
-;;   "Display a verbose message with the same ARGS arguments as `message'."
-;;   (declare (indent 0) (debug t))
-;;   `(progn
-;;      (when single-window-verbose
-;;        (single-window--message
-;;         (concat ,(car args)) ,@(cdr args)))))
 
 (defun single-window--force-single-window-advice (orig-fun &rest args)
   "Advice to force functions to open in the current window.
@@ -128,8 +111,8 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
         ;; Allow buffer switching in dedicated windows
         (setq switch-to-buffer-in-dedicated-window t)
 
-        ;; Safely append or prepend to the standard alist based on configuration
-        (add-to-list 'display-buffer-alist single-window--display-buffer-entry t)
+        ;; Prepend to the standard alist to ensure precedence
+        (add-to-list 'display-buffer-alist single-window--display-buffer-entry)
 
         ;; Defensive safety net against C-level functions splitting frames
         (setq pop-up-windows nil)
@@ -153,8 +136,8 @@ Allows bypassing the enforcement if `current-prefix-arg' is non-nil."
       (set (car var) (cdr var)))
     (setq single-window--save-vars nil)
 
-    ;; Remove only our specific entry from `display-buffer-alist'
-    (setq display-buffer-alist (delete single-window--display-buffer-entry
+    ;; Remove only our specific entry from `display-buffer-alist' non-destructively
+    (setq display-buffer-alist (remove single-window--display-buffer-entry
                                        display-buffer-alist))
 
     (advice-remove 'pop-to-buffer
