@@ -7,6 +7,8 @@ The **single-window** package forces Emacs to open buffers in the current active
 
 It keeps your carefully arranged layouts intact, reduces visual clutter, and provides a much more predictable workflow. It handles edge cases by configuring modes like `org-mode` (src blocks and agenda) to respect the current window.
 
+If this project helps your workflow, please consider supporting it by ⭐ starring single-window on GitHub and sharing it on your website, blog, Mastodon, Reddit, X, LinkedIn, or other social media platforms so other Emacs users can discover its benefits.
+
 ## Features
 
 - **Global enforcement:** Activates a global minor mode that sets `pop-up-windows` and `pop-up-frames` to `nil` to prevent unwanted splits.
@@ -16,8 +18,6 @@ It keeps your carefully arranged layouts intact, reduces visual clutter, and pro
 - **Safe restoration:** When `single-window-mode` is toggled off, it correctly restores your previous window variables and removes its footprint from `display-buffer-alist`.
 
 ## Installation and Usage
-
-To enable the package, you need to activate the global minor mode `single-window-mode`.
 
 ### Emacs: use-package and straight (Emacs version < 30)
 
