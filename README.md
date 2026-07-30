@@ -9,14 +9,6 @@ It keeps your carefully arranged layouts intact, reduces visual clutter, and pro
 
 If this project helps your workflow, please consider supporting it by ⭐ starring single-window on GitHub and sharing it on your website, blog, Mastodon, Reddit, X, LinkedIn, or other social media platforms so other Emacs users can discover its benefits.
 
-## Features
-
-- **Global enforcement:** Activates a global minor mode that sets `pop-up-windows` and `pop-up-frames` to `nil` to prevent unwanted splits.
-- **Prefix argument bypass:** You can dynamically bypass the single window enforcement for a specific command by using a prefix argument (e.g., `C-u`).
-- **Org mode support:** Automatically configures `org-src-window-setup`, `org-agenda-window-setup`, and `org-indirect-buffer-display` to `'current-window`.
-- **Dedicated windows:** Sets `switch-to-buffer-in-dedicated-window` to `t` to permit buffer switching inside dedicated windows.
-- **Safe restoration:** When `single-window-mode` is toggled off, it correctly restores your previous window variables and removes its footprint from `display-buffer-alist`.
-
 ## Installation and Usage
 
 ### Emacs: use-package and straight (Emacs version < 30)
