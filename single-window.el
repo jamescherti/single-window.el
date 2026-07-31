@@ -44,6 +44,16 @@
           :tag "Github"
           "https://github.com/jamescherti/single-window.el"))
 
+(defcustom single-window-exclude-regexps
+  '("^\\*Org Select\\*$" ; `org-capture'
+    "^ \\*transient\\*$")
+  "List of regular expressions matching buffers to exclude.
+When a buffer name matches any of these regexps, `single-window-mode'
+will not force it to open in the current window. This is especially
+useful for temporary utility buffers that hide their mode-line."
+  :type '(repeat regexp)
+  :group 'single-window)
+
 ;;; Internal variables
 
 (defvar org-agenda-window-setup)
@@ -55,22 +65,35 @@
 
 ;;; Functions
 
-(defun single-window--force-single-window-advice (orig-fun &rest args)
+(defun single-window--force-single-window-advice (orig-fun
+                                                  buffer-or-name
+                                                  &rest args)
   "Advice to force functions to open in the current window.
 ORIG-FUN is the original function being advised.
-ARGS are the arguments passed to ORIG-FUN.
-
-Delegates to `display-buffer' mechanisms to respect frame raising.
-Clears hostile local bindings from rogue packages based on user configuration."
-  (if current-prefix-arg
-      (apply orig-fun args)
-    (let ((display-buffer-overriding-action
-           '(display-buffer-same-window (inhibit-same-window . nil))))
-      ;; Temporarily strip the dedicated status from the selected window so
-      ;; `display-buffer-same-window' does not reject it and fall back to
-      ;; splitting the frame.
-      (with-window-non-dedicated nil
-        (apply orig-fun args)))))
+BUFFER-OR-NAME is the buffer or buffer name to display.
+ARGS are the remaining arguments passed to ORIG-FUN."
+  (let* ((buf (get-buffer buffer-or-name))
+         (buf-name (if buf
+                       (buffer-name buf)
+                     (if (stringp buffer-or-name)
+                         buffer-or-name
+                       "")))
+         (excluded-by-regexp
+          (catch 'match
+            (dolist (re single-window-exclude-regexps)
+              (when (and buf-name (string-match-p re buf-name))
+                (throw 'match t)))
+            nil)))
+    (if (or current-prefix-arg excluded-by-regexp)
+        (apply orig-fun buffer-or-name args)
+      (let ((display-buffer-overriding-action
+             '(display-buffer-same-window (inhibit-same-window . nil)))
+            (window (selected-window)))
+        (let ((dedicated (window-dedicated-p window)))
+          (set-window-dedicated-p window nil)
+          (unwind-protect
+              (apply orig-fun buffer-or-name args)
+            (set-window-dedicated-p window dedicated)))))))
 
 ;;; Mode
 
