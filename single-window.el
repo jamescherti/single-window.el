@@ -89,7 +89,9 @@ Clears hostile local bindings from rogue packages based on user configuration."
                          org-agenda-window-setup
                          org-indirect-buffer-display
                          switch-to-buffer-obey-display-actions
-                         switch-to-buffer-in-dedicated-window))
+                         switch-to-buffer-in-dedicated-window
+                         pop-up-windows
+                         pop-up-frames))
             (when (boundp var)
               (push (cons var (symbol-value var)) single-window--save-vars))))
 
@@ -100,6 +102,10 @@ Clears hostile local bindings from rogue packages based on user configuration."
         ;; Route buffer switching through display actions
         (when (boundp 'switch-to-buffer-obey-display-actions)
           (setq switch-to-buffer-obey-display-actions t))
+
+        ;; Discourage creating new windows and frames globally
+        (setq pop-up-windows nil)
+        (setq pop-up-frames nil)
 
         ;; Configure org
         (setq org-src-window-setup 'current-window)
