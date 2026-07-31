@@ -45,8 +45,11 @@
           "https://github.com/jamescherti/single-window.el"))
 
 (defcustom single-window-exclude-regexps
-  '("^\\*Org Select\\*$" ; `org-capture'
-    "^ \\*Agenda "
+  '("^\\*Warnings\\*$"     ; Async Emacs warnings
+    "^\\*Org Select\\*$" ; `org-capture'
+    "^ \\*Agenda " ; `org-agenda'
+    "^\\*Completions\\*$"  ; Built-in completion
+    "^\\*Calendar\\*$"     ; Org-mode date picker
     "^ \\*transient\\*$")
   "List of regular expressions matching buffers to exclude.
 When a buffer name matches any of these regexps, `single-window-mode'
