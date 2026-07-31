@@ -61,6 +61,12 @@ useful for temporary utility buffers that hide their mode-line."
   :type '(repeat regexp)
   :group 'single-window)
 
+(defcustom single-window-respect-display-buffer-alist nil
+  "When non-nil, respect existing rules in `display-buffer-alist'.
+If no rule matches, fallback to opening the buffer in the current window."
+  :type 'boolean
+  :group 'single-window)
+
 ;;; Internal variables
 
 (defvar org-agenda-window-setup)
@@ -94,13 +100,25 @@ ARGS are the remaining arguments passed to ORIG-FUN."
     (if (or current-prefix-arg excluded-by-regexp)
         (apply orig-fun buffer-or-name args)
       (let ((display-buffer-overriding-action
-             '(display-buffer-same-window (inhibit-same-window . nil)))
+             (if single-window-respect-display-buffer-alist
+                 display-buffer-overriding-action
+               '(display-buffer-same-window
+                 (inhibit-same-window . nil))))
+            (display-buffer-alist
+             (if single-window-respect-display-buffer-alist
+                 (append display-buffer-alist
+                         '((".*" display-buffer-same-window
+                            (inhibit-same-window . nil))))
+               display-buffer-alist))
             (window (selected-window)))
         (let ((dedicated (window-dedicated-p window)))
-          (set-window-dedicated-p window nil)
-          (unwind-protect
-              (apply orig-fun buffer-or-name args)
-            (set-window-dedicated-p window dedicated)))))))
+          (if dedicated
+              (progn
+                (set-window-dedicated-p window nil)
+                (unwind-protect
+                    (apply orig-fun buffer-or-name args)
+                  (set-window-dedicated-p window dedicated)))
+            (apply orig-fun buffer-or-name args)))))))
 
 ;;; Mode
 
