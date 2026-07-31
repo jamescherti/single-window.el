@@ -48,6 +48,7 @@
   '("^\\*Warnings\\*$"             ; Async Emacs warnings
     "^\\*Org Select\\*$"           ; `org-capture'
     "^ \\*Agenda "                ; `org-agenda'
+    "^\\*pathaction"              ; The pathaction package
     "^\\*Completions\\*$"          ; Built-in completion
     "^\\*Calendar\\*$"             ; Org-mode date picker
     "^\\*Ediff Control Panel\\*$"  ; Ediff control interface
