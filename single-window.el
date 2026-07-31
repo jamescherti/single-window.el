@@ -46,6 +46,7 @@
 
 (defcustom single-window-exclude-regexps
   '("^\\*Org Select\\*$" ; `org-capture'
+    "^ \\*Agenda "
     "^ \\*transient\\*$")
   "List of regular expressions matching buffers to exclude.
 When a buffer name matches any of these regexps, `single-window-mode'
