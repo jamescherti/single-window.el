@@ -52,6 +52,7 @@
     "^\\*Completions\\*$"          ; Built-in completion
     "^\\*Calendar\\*$"             ; Org-mode date picker
     "^\\*Ediff Control Panel\\*$"  ; Ediff control interface
+    "^ \\*Minibuf-"               ; Minibuffer internal buffers
     "^ \\*transient\\*$")
   "List of regular expressions matching buffers to exclude.
 When a buffer name matches any of these regexps, `single-window-mode'
