@@ -62,11 +62,15 @@ ARGS are the arguments passed to ORIG-FUN.
 
 Delegates to `display-buffer' mechanisms to respect frame raising.
 Clears hostile local bindings from rogue packages based on user configuration."
-  (let ((display-buffer-overriding-action
-         (if current-prefix-arg
-             display-buffer-overriding-action
-           '(display-buffer-same-window (inhibit-same-window . nil)))))
-    (apply orig-fun args)))
+  (if current-prefix-arg
+      (apply orig-fun args)
+    (let ((display-buffer-overriding-action
+           '(display-buffer-same-window (inhibit-same-window . nil))))
+      ;; Temporarily strip the dedicated status from the selected window so
+      ;; `display-buffer-same-window' does not reject it and fall back to
+      ;; splitting the frame.
+      (with-window-non-dedicated nil
+        (apply orig-fun args)))))
 
 ;;; Mode
 
@@ -90,7 +94,8 @@ Clears hostile local bindings from rogue packages based on user configuration."
               (push (cons var (symbol-value var)) single-window--save-vars))))
 
         ;; Allow buffer switching in dedicated windows
-        (setq switch-to-buffer-in-dedicated-window t)
+        (when (boundp 'switch-to-buffer-in-dedicated-window)
+          (setq switch-to-buffer-in-dedicated-window t))
 
         ;; Route buffer switching through display actions
         (when (boundp 'switch-to-buffer-obey-display-actions)
