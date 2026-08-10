@@ -96,14 +96,8 @@ ARGS are the remaining arguments passed to ORIG-FUN."
             (dolist (re single-window-exclude-regexps)
               (when (and buf-name (string-match-p re buf-name))
                 (throw 'match t)))
-            nil))
-         ;; Add native compatibility for popper.el
-         (excluded-by-popper
-          (and buf
-               (bound-and-true-p popper-mode)
-               (fboundp 'popper-display-control-p)
-               (popper-display-control-p buf))))
-    (if (or current-prefix-arg excluded-by-regexp excluded-by-popper)
+            nil)))
+    (if (or current-prefix-arg excluded-by-regexp)
         (apply orig-fun buffer-or-name args)
       (let ((display-buffer-overriding-action
              (if single-window-respect-display-buffer-alist
