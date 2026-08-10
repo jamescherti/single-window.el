@@ -96,21 +96,50 @@ ARGS are the remaining arguments passed to ORIG-FUN."
             (dolist (re single-window-exclude-regexps)
               (when (and buf-name (string-match-p re buf-name))
                 (throw 'match t)))
-            nil)))
-    (if (or current-prefix-arg excluded-by-regexp)
+            nil))
+         (excluded-by-popper
+          nil
+          ;; TODO Test this more and add defcustom
+          ;; (and buf
+          ;;      (bound-and-true-p popper-mode)
+          ;;      (fboundp 'popper-display-control-p)
+          ;;      ;; Does Popper consider THIS SPECIFIC buffer a popup?
+          ;;      (popper-display-control-p buf))
+          ))
+    (if (or current-prefix-arg excluded-by-regexp excluded-by-popper)
         (apply orig-fun buffer-or-name args)
-      (let ((display-buffer-overriding-action
-             (if single-window-respect-display-buffer-alist
-                 display-buffer-overriding-action
-               '(display-buffer-same-window
-                 (inhibit-same-window . nil))))
-            (display-buffer-alist
-             (if single-window-respect-display-buffer-alist
-                 (append display-buffer-alist
-                         '((".*" display-buffer-same-window
-                            (inhibit-same-window . nil))))
-               display-buffer-alist))
-            (window (selected-window)))
+      (let* ((single-window-fallback-rule
+              ;; We pass a list of two display action functions to act as a
+              ;; primary and a fallback.
+              ;;
+              ;; 1. `display-buffer-same-window': The primary goal. Force the
+              ;;    buffer into the active window.
+              ;; 2. `display-buffer-use-some-window': The safety fallback. If
+              ;;    Emacs cannot use the current window (e.g., the user invoked
+              ;;    a command while inside the minibuffer, which cannot display
+              ;;    normal buffers), Emacs's behavior is to split the frame.
+              ;;    This fallback catches that edge case and forces Emacs to
+              ;;    hijack another existing window instead of creating a new
+              ;;    split.
+              '(".*"
+                (display-buffer-same-window
+                 display-buffer-use-some-window)
+                (inhibit-same-window . nil)))
+
+             ;; `cdr` strips the ".*" string off the list above, leaving
+             ;; just the action payload expected by overriding-action.
+             (single-window-action (cdr single-window-fallback-rule))
+
+             (display-buffer-overriding-action
+              (if single-window-respect-display-buffer-alist
+                  display-buffer-overriding-action
+                single-window-action))
+
+             (display-buffer-alist
+              (if single-window-respect-display-buffer-alist
+                  (append display-buffer-alist (list single-window-fallback-rule))
+                display-buffer-alist))
+             (window (selected-window)))
         (let ((dedicated (window-dedicated-p window)))
           (if dedicated
               (progn
