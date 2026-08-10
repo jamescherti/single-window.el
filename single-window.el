@@ -67,6 +67,13 @@ If no rule matches, fallback to opening the buffer in the current window."
   :type 'boolean
   :group 'single-window)
 
+(defcustom single-window-exclude-popper t
+  "When non-nil, allow `popper' to manage its popup buffers.
+If `popper-mode' is active, buffers designated as popups by popper will bypass
+`single-window-mode' enforcement and open according to popper's window rules."
+  :type 'boolean
+  :group 'single-window)
+
 ;;; Internal variables
 
 (defvar org-agenda-window-setup)
@@ -99,14 +106,12 @@ ARGS are the remaining arguments passed to ORIG-FUN."
                   (throw 'match t)))
               nil)))
          (excluded-by-popper
-          nil
-          ;; TODO Test this more and add defcustom
-          ;; (and buf
-          ;;      (bound-and-true-p popper-mode)
-          ;;      (fboundp 'popper-display-control-p)
-          ;;      ;; Does Popper consider THIS SPECIFIC buffer a popup?
-          ;;      (popper-display-control-p buf))
-          ))
+          (and single-window-exclude-popper
+               buf
+               (bound-and-true-p popper-mode)
+               (fboundp 'popper-display-control-p)
+               ;; Does Popper consider THIS SPECIFIC buffer a popup?
+               (popper-display-control-p buf))))
     (if (or current-prefix-arg excluded-by-regexp excluded-by-popper)
         (apply orig-fun buffer-or-name args)
       (let* ((single-window-fallback-rule

@@ -20,6 +20,7 @@ The package also provides the following customization options:
 
 - **Custom window rules:** Provides a setting (`single-window-respect-display-buffer-alist`) that lets you prioritize your own custom display rules for specific buffers, while falling back to the single-window behavior for everything else.
 - **Customizable exclusions:** Allows you to define additional exclusions via the `single-window-exclude-regexps` variable, which accepts a list of regular expressions to match ignored buffer names.
+- **Popper integration:** Provides `single-window-exclude-popper` (enabled by default) to allow **popper** to bypass the **single-window** package enforcement for its popups.
 
 If this project helps your workflow, please consider supporting it by ⭐ starring single-window on GitHub and sharing it on your website, blog, Mastodon, Reddit, X, LinkedIn, or other social media platforms so other Emacs users can discover its benefits.
 
@@ -90,7 +91,17 @@ For instance, forcing all buffers into the active window via `display-buffer-ali
 
 Additionally, the package manages dedicated windows. For example, if a user attempts to open a file directly from a dedicated `grep-mode` or `embark-export` search results buffer, standard display rules will often cause Emacs to split the frame. The **single-window** package intercepts this action, temporarily removes the dedicated flag so the buffer can load in the active window, and then restores the original state.
 
+It also includes a fallback mechanism. If Emacs is forbidden from using the current window (e.g., you invoke a command while inside the minibuffer), Emacs usually splits the frame. This package catches that edge case and safely uses another existing window instead.
+
 Finally, the package allows bypassing the strict window enforcement for individual commands by supplying a prefix argument (`C-u`).
+
+### What is the difference with popper?
+
+The **single-window** and **popper** packages are not mutually exclusive and can be used simultaneously.
+
+The **popper** package displays temporary buffers in a dedicated popup area, typically at the bottom of the screen, which allows for quick dismissal.
+
+In contrast, **single-window** prevents automated window splitting. It also provides a mechanism for exceptions, allowing specific packages, such as Transient, and popper itself, to bypass the strict single-window enforcement and split the frame as originally intended.
 
 ## Author and License
 
