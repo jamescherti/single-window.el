@@ -7,6 +7,20 @@ The **[single-window](https://github.com/jamescherti/single-window.el)** package
 
 It keeps your carefully arranged layouts intact, reduces visual clutter, and provides a much more predictable workflow. It handles edge cases by configuring modes like `org-mode` (src blocks and agenda) to respect the current window.
 
+To ensure it does not break standard Emacs functionality, the package is built to handle the following edge cases and integrations out of the box:
+
+- **Org-mode integrations:** Configures Org-mode to open source blocks, the agenda, and indirect buffers directly in the active window
+- **Transient and Magit:** Excludes Transient buffers by default, which ensures that Magit popup menus render correctly and manage their own window placement.
+- **Ediff control panel:** Excludes the Ediff control interface so it can maintain its specific layout requirements without breaking.
+- **Temporary and utility buffers:** Ignores the minibuffer, asynchronous Emacs warnings, Org capture popups, and built-in `*Completions*` buffers so they do not hijack your active workspace.
+- **Dedicated windows:** Safely handles dedicated windows in the background, temporarily un-dedicating them to load the buffer without throwing errors or breaking the layout.
+- **Manual overrides:** Allows you to temporarily bypass the single-window enforcement by passing a prefix argument (e.g., `C-u`) before running a command.
+
+The package also provides the following customization options:
+
+- **Custom window rules:** Provides a setting (`single-window-respect-display-buffer-alist`) that lets you prioritize your own custom display rules for specific buffers, while falling back to the single-window behavior for everything else.
+- **Customizable exclusions:** Allows you to define additional exclusions via the `single-window-exclude-regexps` variable, which accepts a list of regular expressions to match ignored buffer names.
+
 If this project helps your workflow, please consider supporting it by ⭐ starring single-window on GitHub and sharing it on your website, blog, Mastodon, Reddit, X, LinkedIn, or other social media platforms so other Emacs users can discover its benefits.
 
 ## Installation and Usage
