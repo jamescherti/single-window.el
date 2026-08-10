@@ -92,11 +92,12 @@ ARGS are the remaining arguments passed to ORIG-FUN."
                          buffer-or-name
                        "")))
          (excluded-by-regexp
-          (catch 'match
-            (dolist (re single-window-exclude-regexps)
-              (when (and buf-name (string-match-p re buf-name))
-                (throw 'match t)))
-            nil))
+          (when single-window-exclude-regexps
+            (catch 'match
+              (dolist (re single-window-exclude-regexps)
+                (when (and buf-name (string-match-p re buf-name))
+                  (throw 'match t)))
+              nil)))
          (excluded-by-popper
           nil
           ;; TODO Test this more and add defcustom
