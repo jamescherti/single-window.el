@@ -3,7 +3,7 @@
 ![License](https://img.shields.io/github/license/jamescherti/single-window.el)
 ![](https://jamescherti.com/misc/made-for-gnu-emacs.svg)
 
-The **single-window** package forces Emacs to open buffers in the current active window.
+The **[single-window](https://github.com/jamescherti/single-window.el)** package forces Emacs to open buffers in the current active window.
 
 It keeps your carefully arranged layouts intact, reduces visual clutter, and provides a much more predictable workflow. It handles edge cases by configuring modes like `org-mode` (src blocks and agenda) to respect the current window.
 
