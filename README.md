@@ -13,7 +13,7 @@ To ensure it does not break standard Emacs functionality, the package is built t
 - **Transient and Magit:** Excludes Transient buffers by default, which ensures that Magit popup menus render correctly and manage their own window placement.
 - **Ediff control panel:** Excludes the Ediff control interface so it can maintain its specific layout requirements without breaking.
 - **Temporary and utility buffers:** Ignores the minibuffer, asynchronous Emacs warnings, Org capture popups, and built-in `*Completions*` buffers so they do not hijack your active workspace.
-- **Dedicated windows:** Safely handles dedicated windows in the background, temporarily un-dedicating them to load the buffer without throwing errors or breaking the layout.
+- **Dedicated windows:** Safely handles dedicated windows in the background (e.g., `grep-mode` or `embark-export`), temporarily un-dedicating them to load the buffer without throwing errors or breaking the layout.
 - **Manual overrides:** Allows you to temporarily bypass the single-window enforcement by passing a prefix argument (e.g., `C-u`) before running a command.
 
 The package also provides the following customization options:
@@ -77,6 +77,20 @@ Here is how to install *single-window* on Doom Emacs:
 ```
 doom sync
 ```
+
+## Frequently Asked Questions
+
+### What does this provide over `display-buffer-alist`?
+
+The **single-window** package provides a minor mode that handles edge cases.
+
+While similar behavior can be replicated by adding a catch-all rule to `display-buffer-alist`, this often disrupts standard Emacs functionality.
+
+For instance, forcing all buffers into the active window via `display-buffer-alist` interferes with packages that rely on specific user interface layouts, such as Ediff, Transient (which includes Magit), Org Agenda, and many others. This package resolves this by providing default configurations that natively exclude these specific edge cases.
+
+Additionally, the package manages dedicated windows. For example, if a user attempts to open a file directly from a dedicated `grep-mode` or `embark-export` search results buffer, standard display rules will often cause Emacs to split the frame. The **single-window** package intercepts this action, temporarily removes the dedicated flag so the buffer can load in the active window, and then restores the original state.
+
+Finally, the package allows bypassing the strict window enforcement for individual commands by supplying a prefix argument (`C-u`).
 
 ## Author and License
 
