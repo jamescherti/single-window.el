@@ -67,7 +67,7 @@ If no rule matches, fallback to opening the buffer in the current window."
   :type 'boolean
   :group 'single-window)
 
-(defcustom single-window-exclude-popper t
+(defcustom single-window-exclude-popper nil
   "When non-nil, allow `popper' to manage its popup buffers.
 If `popper-mode' is active, buffers designated as popups by popper will bypass
 `single-window-mode' enforcement and open according to popper's window rules."
