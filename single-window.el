@@ -131,20 +131,12 @@ ARGS are the remaining arguments passed to ORIG-FUN."
                 (display-buffer-same-window
                  display-buffer-use-some-window)
                 (inhibit-same-window . nil)))
-
-             ;; `cdr` strips the ".*" string off the list above, leaving
-             ;; just the action payload expected by overriding-action.
-             (single-window-action (cdr single-window-fallback-rule))
-
-             (display-buffer-overriding-action
-              (if single-window-respect-display-buffer-alist
-                  display-buffer-overriding-action
-                single-window-action))
-
              (display-buffer-alist
               (if single-window-respect-display-buffer-alist
-                  (append display-buffer-alist (list single-window-fallback-rule))
-                display-buffer-alist))
+                  (append display-buffer-alist
+                          (list single-window-fallback-rule))
+                (append (list single-window-fallback-rule)
+                        display-buffer-alist)))
              (window (selected-window)))
         (let ((dedicated (window-dedicated-p window)))
           (if dedicated
