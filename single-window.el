@@ -53,7 +53,7 @@
     "^\\*pathaction"              ; The pathaction package
     "^\\*Ediff Control Panel\\*$"  ; Ediff control interface
     "^ \\*Minibuf-"               ; Minibuffer internal buffers
-    "^ \\*transient\\*$")
+    "^ \\*transient\\*$")          ; Transient and Magit
   "List of regular expressions matching buffers to exclude.
 When a buffer name matches any of these regexps, `single-window-mode'
 will not force it to open in the current window. This is especially
@@ -98,6 +98,12 @@ ARGS are the remaining arguments passed to ORIG-FUN."
                      (if (stringp buffer-or-name)
                          buffer-or-name
                        "")))
+         (action (car args))
+         (funcs (if (listp action) (car action) nil))
+         (no-window (or (eq action 'display-buffer-no-window)
+                        (eq funcs 'display-buffer-no-window)
+                        (and (listp funcs)
+                             (memq 'display-buffer-no-window funcs))))
          (excluded-by-regexp
           (when single-window-exclude-regexps
             (catch 'match
@@ -112,7 +118,10 @@ ARGS are the remaining arguments passed to ORIG-FUN."
                (fboundp 'popper-display-control-p)
                ;; Does Popper consider THIS SPECIFIC buffer a popup?
                (popper-display-control-p buf))))
-    (if (or current-prefix-arg excluded-by-regexp excluded-by-popper)
+    (if (or current-prefix-arg
+            excluded-by-regexp
+            excluded-by-popper
+            no-window)
         (apply orig-fun buffer-or-name args)
       (let* ((single-window-fallback-rule
               ;; We pass a list of two display action functions to act as a
@@ -139,7 +148,7 @@ ARGS are the remaining arguments passed to ORIG-FUN."
                         display-buffer-alist)))
              (window (selected-window)))
         (let ((dedicated (window-dedicated-p window)))
-          (if dedicated
+          (if (and dedicated (not (window-minibuffer-p window)))
               (progn
                 (set-window-dedicated-p window nil)
                 (unwind-protect
