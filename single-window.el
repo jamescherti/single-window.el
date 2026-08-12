@@ -28,9 +28,27 @@
 ;; window.
 ;;
 ;; It keeps your carefully arranged layouts intact, reduces visual clutter, and
-;; provides a much more predictable workflow. It also handles edge cases by
-;; configuring modes like org-mode (src blocks and agenda) to respect the
-;; current window.
+;; provides a much more predictable workflow.
+;;
+;; To ensure it does not break standard Emacs functionality, the package is
+;; built to handle the following edge cases and integrations out of the box:
+;;
+;; - Transient and Magit: Excludes Transient buffers by default, which ensures
+;;   that Magit popup menus render correctly and manage their own window
+;;   placement.
+;; - Ediff control panel: Excludes the Ediff control interface so it can
+;;   maintain its specific layout requirements without breaking.
+;; - Temporary and utility buffers: Ignores the minibuffer, asynchronous Emacs
+;;   warnings, Org capture popups, and built-in *Completions* buffers so they do
+;;   not hijack your active workspace.
+;; - Dedicated windows: Safely handles dedicated windows in the background
+;;   (e.g., grep-mode or embark-export), temporarily un-dedicating them to load
+;;   the buffer without throwing errors or breaking the layout.
+;; - Org-mode integrations: Configures Org-mode to open source blocks, the
+;;   agenda, and indirect buffers directly in the active window
+;; - Manual overrides: Allows you to temporarily bypass the single-window
+;;   enforcement by passing a prefix argument (e.g., C-u) before running a
+;;   command.
 
 ;;; Code:
 
