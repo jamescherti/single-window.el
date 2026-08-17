@@ -30,8 +30,9 @@ If this project helps your workflow, please consider supporting it by ⭐ starri
 
 To install *single-window* with `straight.el`:
 
-1. It if hasn't already been done, [add the straight.el bootstrap code](https://github.com/radian-software/straight.el?tab=readme-ov-file#getting-started) to your init file.
-2. Add the following code to the Emacs init file:
+Step 1: It if hasn't already been done, [add the straight.el bootstrap code](https://github.com/radian-software/straight.el?tab=readme-ov-file#getting-started) to your init file.
+
+Step 2: Add the following code to the Emacs init file:
 ```emacs-lisp
 (use-package single-window
   :straight (single-window
@@ -58,7 +59,7 @@ To install *single-window* with `use-package` and `:vc` (Emacs >= 30):
 
 Here is how to install *single-window* on Doom Emacs:
 
-1. Add to the `~/.doom.d/packages.el` file:
+Step 1: Add to the `~/.doom.d/packages.el` file:
 
 ```elisp
 (package! single-window
@@ -66,14 +67,14 @@ Here is how to install *single-window* on Doom Emacs:
   (:host github :repo "jamescherti/single-window.el"))
 ```
 
-2. Add to `~/.doom.d/config.el`:
+Step 2: Add to `~/.doom.d/config.el`:
 
 ```elisp
 (after! single-window
   (single-window-mode 1))
 ```
 
-3. Run the `doom sync` command:
+Step 3: Run the `doom sync` command:
 
 ```
 doom sync
