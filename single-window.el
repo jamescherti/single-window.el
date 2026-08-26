@@ -5,7 +5,7 @@
 ;; Author: James Cherti
 ;; Version: 1.0.1
 ;; URL: https://github.com/jamescherti/single-window.el
-;; Keywords: convenience
+;; Keywords: convenience, windows
 ;; Package-Requires: ((emacs "24.4"))
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -56,7 +56,7 @@
 
 (defgroup single-window nil
   "Always open buffer in the current window."
-  :group 'convenience
+  :group 'windows
   :prefix "single-window-"
   :link '(url-link
           :tag "Github"
