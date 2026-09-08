@@ -49,6 +49,19 @@
 ;; - Manual overrides: Allows you to temporarily bypass the single-window
 ;;   enforcement by passing a prefix argument (e.g., C-u) before running a
 ;;   command.
+;;
+;; The package also provides the following customization options:
+;;
+;; - Custom window rules: Provides a setting
+;;   (`single-window-respect-display-buffer-alist') that lets you prioritize
+;;   your own custom display rules for specific buffers, while falling back to
+;;   the single-window behavior for everything else.
+;; - Customizable exclusions: Allows you to define additional exclusions via the
+;;   `single-window-exclude-regexps' variable, which accepts a list of regular
+;;   expressions to match ignored buffer names.
+;; - Popper integration: Provides `single-window-exclude-popper' (disabled by
+;;   default) to allow popper to bypass the single-window package enforcement
+;;   for its popups.
 
 ;;; Code:
 
