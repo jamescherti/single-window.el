@@ -82,6 +82,7 @@
     "^\\*Calendar\\*$"             ; Org-mode date picker
     "^\\*Completions\\*$"          ; Built-in completion
     "^\\*pathaction"              ; The pathaction package
+    "^\\*compilation\\*$"          ; Built-in compilation
     "^\\*Ediff Control Panel\\*$"  ; Ediff control interface
     "^ \\*Minibuf-"               ; Minibuffer internal buffers
     "^ \\*transient\\*$")          ; Transient and Magit
@@ -205,8 +206,9 @@ ARGS are the remaining arguments passed to ORIG-FUN."
                          org-indirect-buffer-display
                          switch-to-buffer-obey-display-actions
                          switch-to-buffer-in-dedicated-window
-                         pop-up-windows
-                         pop-up-frames))
+                         ;; pop-up-windows
+                         ;; pop-up-frames
+                         ))
             (when (boundp var)
               (push (cons var (symbol-value var)) single-window--save-vars))))
 
@@ -219,8 +221,8 @@ ARGS are the remaining arguments passed to ORIG-FUN."
           (setq switch-to-buffer-obey-display-actions t))
 
         ;; Discourage creating new windows and frames globally
-        (setq pop-up-windows nil)
-        (setq pop-up-frames nil)
+        ;; (setq pop-up-windows t)
+        ;; (setq pop-up-frames nil)
 
         ;; Configure org
         (setq org-src-window-setup 'current-window)
