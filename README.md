@@ -26,7 +26,21 @@ If this project helps your workflow, please consider supporting it by ⭐ starri
 
 ## Installation and Usage
 
-### Emacs: use-package and straight (Emacs version < 30)
+### Install from MELPA
+
+To install **single-window** from MELPA:
+
+1. If you haven't already done so, [add MELPA repository to your Emacs configuration](https://melpa.org/#/getting-started).
+
+2. Add the following code to your Emacs init file to install **single-window** from MELPA:
+
+```emacs-lisp
+(use-package single-window
+  :config
+  (single-window-mode 1))
+```
+
+### Alternative: use-package and straight (Emacs version < 30)
 
 To install *single-window* with `straight.el`:
 
