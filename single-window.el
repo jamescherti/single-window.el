@@ -3,7 +3,7 @@
 ;; Copyright (C) 2026 James Cherti
 
 ;; Author: James Cherti <https://www.jamescherti.com/contact/>
-;; Version: 1.0.2
+;; Version: 1.0.3
 ;; URL: https://github.com/jamescherti/single-window.el
 ;; Keywords: convenience, windows
 ;; Package-Requires: ((emacs "24.4"))
