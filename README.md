@@ -3,6 +3,9 @@
 ![License](https://img.shields.io/github/license/jamescherti/single-window.el)
 ![](https://jamescherti.com/misc/made-for-gnu-emacs.svg)
 
+- Author: James Cherti <[https://www.jamescherti.com/](https://www.jamescherti.com/)>
+- License: GPL
+
 The **[single-window](https://github.com/jamescherti/single-window.el)** package forces Emacs to open buffers in the current active window.
 
 It keeps your carefully arranged layouts intact, reduces visual clutter, and provides a much more predictable workflow.
