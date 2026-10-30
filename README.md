@@ -1,5 +1,5 @@
 # single-window.el - Always Open Emacs Buffers in the Current Active Window
-![Build Status](https://github.com/jamescherti/single-window.el/actions/workflows/melpazoid.yml/badge.svg)
+![Build Status](https://github.com/jamescherti/single-window.el/actions/workflows/ci.yml/badge.svg)
 ![License](https://img.shields.io/github/license/jamescherti/single-window.el)
 ![](https://jamescherti.com/misc/made-for-gnu-emacs.svg)
 
