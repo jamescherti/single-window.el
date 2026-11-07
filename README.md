@@ -4,7 +4,7 @@
 ![](https://jamescherti.com/misc/made-for-gnu-emacs.svg)
 
 - Author: James Cherti <[https://www.jamescherti.com/](https://www.jamescherti.com/)>
-- License: GPL
+- License: GPL 3.0 or later
 
 The **[single-window](https://github.com/jamescherti/single-window.el)** package forces Emacs to open buffers in the current active window.
 
